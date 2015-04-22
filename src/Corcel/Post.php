@@ -19,7 +19,7 @@ class Post extends Eloquent
 
     protected $table = 'posts';
     protected $primaryKey = 'ID';
-    protected $with = array('meta');
+    protected $with = array('meta', 'attachment');
 
     /**
      * Meta data relationship
