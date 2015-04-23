@@ -17,7 +17,7 @@ class Post extends Eloquent
     const CREATED_AT = 'post_date';
     const UPDATED_AT = 'post_modified';
 
-    protected $table = 'posts';
+    protected $table = 'wp_posts';
     protected $primaryKey = 'ID';
     protected $with = array('meta', 'attachment');
 
