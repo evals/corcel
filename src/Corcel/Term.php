@@ -6,6 +6,6 @@ use \Illuminate\Database\Eloquent\Model as Eloquent;
 
 class Term extends Eloquent
 {
-    protected $table = 'terms';
+    protected $table = 'wp_terms';
     protected $primaryKey = 'term_id';
 }
