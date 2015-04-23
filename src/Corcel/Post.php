@@ -77,45 +77,6 @@ class Post extends Eloquent
         return $this->hasMany('Corcel\Post', 'post_parent')->where('post_type', 'revision');
     }
 
-    /**
-     * Overriding newQuery() to the custom PostBuilder with some interesting methods
-     *
-     * @param bool $excludeDeleted
-     * @return Corcel\PostBuilder
-     */
-    public function newQuery($excludeDeleted = true)
-    {
-        $builder = new PostBuilder($this->newBaseQueryBuilder());
-        $builder->setModel($this)->with($this->with);
-        $builder->orderBy('post_date', 'desc');
-
-        if (isset($this->postType) and $this->postType) {
-            $builder->type($this->postType);
-        }
-
-        if ($excludeDeleted and $this->softDelete) {
-            $builder->whereNull($this->getQualifiedDeletedAtColumn());
-        }
-
-        return $builder;
-    }
-
-    /**
-     * Magic method to return the meta data like the post original fields
-     *
-     * @param string $key
-     * @return string
-     */
-    public function __get($key)
-    {
-        if (!isset($this->$key)) {
-            if (isset($this->meta()->get()->$key)) {
-                return $this->meta()->get()->$key;
-            }
-        }
-
-        return parent::__get($key);
-    }
 
     public function save(array $options = array())
     {
@@ -126,40 +87,6 @@ class Post extends Eloquent
         return parent::save($options);
     }
 
-    public function hasMany($related, $foreignKey = null, $localKey = null)
-    {
-        $foreignKey = $foreignKey ?: $this->getForeignKey();
-
-        $instance = new $related;
-        $instance->setConnection($this->getConnection()->getName());
-
-        $localKey = $localKey ?: $this->getKeyName();
-
-        return new HasMany($instance->newQuery(), $this, $instance->getTable().'.'.$foreignKey, $localKey);
-    }
-
-    public function belongsToMany($related, $table = null, $foreignKey = null, $otherKey = null, $relation = null)
-    {
-        if (is_null($relation))
-        {
-            $relation = $this->getBelongsToManyCaller();
-        }
-
-        $foreignKey = $foreignKey ?: $this->getForeignKey();
-
-        $instance = new $related;
-        $instance->setConnection($this->getConnection()->getName());
-
-        $otherKey = $otherKey ?: $instance->getForeignKey();
-
-        if (is_null($table))
-        {
-            $table = $this->joiningTable($related);
-        }
-
-        $query = $instance->newQuery();
-
-        return new BelongsToMany($query, $this, $table, $foreignKey, $otherKey, $relation);
-    }
+    
 
 }
